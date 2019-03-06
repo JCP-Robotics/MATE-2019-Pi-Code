@@ -4,6 +4,8 @@ from nanpy import SerialManager, ArduinoApi
 import evdev
 import serial
 import nanpy
+from instructionsender import InstructionSender, ServoSender
+import instructionsender
 
 class Direction(Enum):
     FORWARD = 0
@@ -30,13 +32,33 @@ arduino_api = None
 if arduino_conn is not None:
     arduino_api = ArduinoApi(connection=arduino_conn)
 
+if arduino_api is not None:
+    sender = InstructionSender(arduino_api)
+    sender.setup()
+
+servosender = ServoSender()
+servosender.stop()
+
 class Instruction:
     def __init__(self, direction, source=""):
         self.direction = direction
         self.source = source;
 
     def send_instruction(self):
-        pass
+        #fwd = counterclockwise
+        if sender is not None:
+            if self.direction == Direction.UP:
+                pass
+                #servosender.spin_reverse(400)
+            elif self.direction == Direction.DOWN:
+                pass
+                #servosender.spin_forward(400)
+            elif self.direction == Direction.NEUTRALL or self.direction == Direction.NEUTRALR or self.direction == Direction.NEUTRAL:
+                sender.stop(instructionsender.motor1Speed, instructionsender.motor1A, instructionsender.motor1B)
+                #servosender.stop()
+            else:
+                sender.test()
+                #servosender.spin_forward(400)
         #ser.write(b'%d'  % self.direction.value)
 
 def resolve_absevent(abs_event):
@@ -119,22 +141,22 @@ else:
             
             if current_instruction.source == "left":
                 if current_instruction.direction == Direction.NEUTRALL:
-                    print(current_instruction.direction)
                     current_instruction.send_instruction()
+                    print(current_instruction.direction)
                 if previous_instruction is not None and previous_instruction[0].direction != current_instruction.direction:
                     if previous_instruction[0].direction == Direction.NEUTRALL:
-                        print(current_instruction.direction)
                         current_instruction.send_instruction()
+                        print(current_instruction.direction)
                 previous_instruction[0] = current_instruction
             
             if current_instruction.source == "right":
                 if current_instruction.direction == Direction.NEUTRALR:
-                    print(current_instruction.direction)
                     current_instruction.send_instruction()
+                    print(current_instruction.direction)
                 if previous_instruction is not None and previous_instruction[1].direction != current_instruction.direction:
                     if previous_instruction[1].direction == Direction.NEUTRALR:
-                        print(current_instruction.direction)
                         current_instruction.send_instruction()
+                        print(current_instruction.direction)
                 previous_instruction[1] = current_instruction
                     
             '''if previous_instruction is not None and previous_instruction.direction != current_instruction.direction:
