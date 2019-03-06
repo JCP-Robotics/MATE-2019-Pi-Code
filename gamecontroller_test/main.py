@@ -40,26 +40,39 @@ servosender = ServoSender()
 servosender.stop()
 
 class Instruction:
-    def __init__(self, direction, source=""):
+    def __init__(self, direction, prev, source=""):
         self.direction = direction
+        self.prev = prev
         self.source = source;
 
     def send_instruction(self):
         #fwd = counterclockwise
         if sender is not None:
             if self.direction == Direction.UP:
-                pass
-                #servosender.spin_reverse(400)
+                servosender.spin_reverse(400)
             elif self.direction == Direction.DOWN:
                 pass
-                #servosender.spin_forward(400)
-            elif self.direction == Direction.NEUTRALL or self.direction == Direction.NEUTRALR or self.direction == Direction.NEUTRAL:
-                sender.stop(instructionsender.motor1Speed, instructionsender.motor1A, instructionsender.motor1B)
-                #servosender.stop()
-            else:
-                sender.test()
-                #servosender.spin_forward(400)
-        #ser.write(b'%d'  % self.direction.value)
+                servosender.spin_forward(400)
+            elif self.direction == Direction.FORWARD:
+                pass
+            elif self.direction == Direction.BACKWARD:
+                pass
+            elif self.direction == Direction.LEFT:
+                pass
+            elif self.direction == Direction.RIGHT:
+                pass
+            elif self.direction == Direction.UNKNOWN:
+                pass
+            elif self.direction == Direction.NEUTRALR:
+                if self.prev == Direction.UP or self.prev == Direction.DOWN:
+                    servosender.stop()
+                else:
+                    sender.stopall()
+            elif self.direction == Direction.NEUTRALL:
+                sender.stopall()
+            elif self.direction == Direction.NEUTRAL:
+                servosender.stop()
+                sender.stop()
 
 def resolve_absevent(abs_event):
     if abs_event.type == ecodes.EV_ABS:

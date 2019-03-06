@@ -58,19 +58,65 @@ class InstructionSender:
             self.api.analogWrite(speedPin, speed)
             self.api.digitalWrite(pinA, self.api.LOW)
             self.api.digitalWrite(pinB, self.api.HIGH)
-
+    
+    def forward(self):
+        if self.api is not None:
+            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
+            self.spin_forward(255, motor3Speed, motor3A, motor3B)
+            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+            
+    def backward(self):
+        if self.api is not None:
+            self.spin_forward(255, motor1Speed, motor1A, motor1B)
+            self.spin_forward(255, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            
+    def left(self):
+        if self.api is not None:
+            self.spin_forward(255, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
+            self.spin_forward(255, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            
+    def right(self):
+        if self.api is not None:
+            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
+            self.spin_forward(255, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
+            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+            
+    def clockwise(self):
+        if self.api is not None:
+            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
+            self.spin_forward(255, motor2Speed, motor2A, motor2B)
+            self.spin_forward(255, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            
+    def counterclockwise(self):
+        if self.api is not None:
+            self.spin_forward(255, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
+            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+    
     def stop(self, speedPin, pinA, pinB):
         if self.api is not None:
             self.api.analogWrite(speedPin, 0)
             self.api.digitalWrite(pinA, self.api.LOW)
             self.api.digitalWrite(pinB, self.api.LOW)
             
+    def stopall(self):
+        if self.api is not None:
+            self.stop(motor1Speed, motor1A, motor1B)
+            self.stop(motor2Speed, motor2A, motor2B)
+            self.stop(motor3Speed, motor3A, motor3B)
+            self.stop(motor4Speed, motor4A, motor4B)
+            
     def test(self):
         self.spin_reverse(255, motor1Speed, motor1A, motor1B)
-        '''if self.servosender is not None:
-            self.servosender.spin_forward(200)'''
-        #time.sleep(5)
-        #self.stop(motor1Speed, motor1A, motor1B)
+
         
 class ServoSender:
     def __init__(self):
