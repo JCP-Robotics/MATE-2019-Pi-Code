@@ -120,17 +120,21 @@ else:
             if current_instruction.source == "left":
                 if current_instruction.direction == Direction.NEUTRALL:
                     print(current_instruction.direction)
+                    current_instruction.send_instruction()
                 if previous_instruction is not None and previous_instruction[0].direction != current_instruction.direction:
                     if previous_instruction[0].direction == Direction.NEUTRALL:
                         print(current_instruction.direction)
+                        current_instruction.send_instruction()
                 previous_instruction[0] = current_instruction
             
             if current_instruction.source == "right":
                 if current_instruction.direction == Direction.NEUTRALR:
                     print(current_instruction.direction)
+                    current_instruction.send_instruction()
                 if previous_instruction is not None and previous_instruction[1].direction != current_instruction.direction:
                     if previous_instruction[1].direction == Direction.NEUTRALR:
                         print(current_instruction.direction)
+                        current_instruction.send_instruction()
                 previous_instruction[1] = current_instruction
                     
             '''if previous_instruction is not None and previous_instruction.direction != current_instruction.direction:
