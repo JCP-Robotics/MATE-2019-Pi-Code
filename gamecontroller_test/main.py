@@ -1,5 +1,7 @@
 from evdev import InputDevice, categorize, ecodes
 from enum import Enum
+import evdev
+import serial
 
 class Direction(Enum):
     FORWARD = 0
@@ -13,13 +15,14 @@ class Direction(Enum):
     NEUTRAL = 8
     UNKNOWN = 9
 
+ser = serial.Serial("/dev/ttyACM0", 9600)
 
 class Instruction:
     def __init__(self, direction):
         self.direction = direction
 
     def send_instruction(self):
-        pass
+        ser.write(b'%d'  % self.direction.value)
 
 def resolve_absevent(abs_event):
     if abs_event.type == ecodes.EV_ABS:
@@ -69,18 +72,34 @@ def resolve_btnevent(btn_event):
     return Instruction(Direction.UNKNOWN)
 
 
-gamepad = InputDevice('/dev/input/event18')
-previous_instruction = Instruction(Direction.NEUTRAL)
-for event in gamepad.read_loop():
-    if event.type == ecodes.EV_KEY:
-        print(resolve_btnevent(event).direction)
-    elif event.type == ecodes.EV_ABS:
-        current_instruction = resolve_absevent(event)
-        if current_instruction.direction == Direction.NEUTRAL:
-            print(current_instruction.direction)
-        if previous_instruction is not None and previous_instruction.direction != current_instruction.direction:
-            if previous_instruction.direction == Direction.NEUTRAL:
+devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+device_path = ""
+for device in devices:
+    if "Gamepad" in device.name:
+        device_path = device.path
+        break
+
+if device_path == "":
+    print("Couldn't find the gamepad. Check the connection.")
+else:
+    print("Listening on: ", device_path)
+    print("Sending to: ", "/dev/ttyACM0")
+    gamepad = InputDevice(device_path)
+    previous_instruction = Instruction(Direction.NEUTRAL)
+    for event in gamepad.read_loop():
+        if event.type == ecodes.EV_KEY:
+            instruction = resolve_btnevent(event)
+            instruction.send_instruction()
+            print(instruction.direction)
+        elif event.type == ecodes.EV_ABS:
+            current_instruction = resolve_absevent(event)
+            if current_instruction.direction == Direction.NEUTRAL:
+                current_instruction.send_instruction()
                 print(current_instruction.direction)
-        previous_instruction = current_instruction
+            if previous_instruction is not None and previous_instruction.direction != current_instruction.direction:
+                if previous_instruction.direction == Direction.NEUTRAL:
+                    current_instruction.send_instruction()
+                    print(current_instruction.direction)
+            previous_instruction = current_instruction
 
         
