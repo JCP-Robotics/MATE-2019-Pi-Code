@@ -42,7 +42,7 @@ if arduino_api is not None:
     servosender.stop()
 
 class Instruction:
-    def __init__(self, direction, prev, instruction2=None, source=""):
+    def __init__(self, direction, prev=None, instruction2=None, source=""):
         self.direction = direction
         self.prev = prev
         self.source = source
@@ -56,7 +56,7 @@ class Instruction:
             elif self.direction == Direction.DOWN:
                 servosender.spin_forward(400)
             elif self.direction == Direction.FORWARD:
-                pass
+                sender.forward()
             elif self.direction == Direction.BACKWARD:
                 pass
             elif self.direction == Direction.LEFT:
@@ -66,15 +66,16 @@ class Instruction:
             elif self.direction == Direction.UNKNOWN:
                 pass
             elif self.direction == Direction.NEUTRALR:
-                if self.prev == Direction.UP or self.prev == Direction.DOWN:
-                    servosender.stop()
-                else:
-                    sender.stopall()
+                if self.prev is not None:
+                    if self.prev == Direction.UP or self.prev == Direction.DOWN:
+                        servosender.stop()
+                    else:
+                        sender.stopall()
             elif self.direction == Direction.NEUTRALL:
                 sender.stopall()
             elif self.direction == Direction.NEUTRAL:
                 servosender.stop()
-                sender.stop()               
+                sender.stopall()               
 
 def resolve_absevent(abs_event):
     if abs_event.type == ecodes.EV_ABS:
@@ -84,32 +85,32 @@ def resolve_absevent(abs_event):
         #print(value)
         if type_code == "ABS_X":
             if value < 128:
-                return Instruction(Direction.LEFT, "left")
+                return Instruction(Direction.LEFT, source="left")
             elif value > 128:
-                return Instruction(Direction.RIGHT, "left")
+                return Instruction(Direction.RIGHT, source="left")
             else:
-                return Instruction(Direction.NEUTRALL, "left")
+                return Instruction(Direction.NEUTRALL, source="left")
         elif type_code == "ABS_Y":
             if value < -129:
-                return Instruction(Direction.FORWARD, "left")
+                return Instruction(Direction.FORWARD, source="left")
             elif value > -129:
-                return Instruction(Direction.BACKWARD, "left")
+                return Instruction(Direction.BACKWARD, source="left")
             else:
-                return Instruction(Direction.NEUTRALL, "left")
+                return Instruction(Direction.NEUTRALL, source="left")
         elif type_code == "ABS_RX":
             if value < 128:
-                return Instruction(Direction.COUNTERCLOCKWISE, "right")
+                return Instruction(Direction.COUNTERCLOCKWISE, source="right")
             elif value > 128:
-                return Instruction(Direction.CLOCKWISE, "right")
+                return Instruction(Direction.CLOCKWISE, source="right")
             else:
-                return Instruction(Direction.NEUTRALR, "right")
+                return Instruction(Direction.NEUTRALR, source="right")
         elif type_code == "ABS_RY":
             if value < -129:
-                return Instruction(Direction.UP, "right")
+                return Instruction(Direction.UP, source="right")
             elif value > -129:
-                return Instruction(Direction.DOWN, "right")
+                return Instruction(Direction.DOWN, source="right")
             else:
-                return Instruction(Direction.NEUTRALR, "right")
+                return Instruction(Direction.NEUTRALR, source="right")
         #return Instruction(Direction.NEUTRAL)
     return Instruction(Direction.UNKNOWN)
 
