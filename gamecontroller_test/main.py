@@ -21,6 +21,7 @@ class Direction(Enum):
     NEUTRALL = 10
     NEUTRALR = 11
 
+# search for connected Arduino and try to connect to it
 arduino_conn = None
 try:
     arduino_conn = SerialManager()
@@ -36,14 +37,16 @@ if arduino_api is not None:
     sender = InstructionSender(arduino_api)
     sender.setup()
 
-servosender = ServoSender()
-servosender.stop()
+if arduino_api is not None:
+    servosender = ServoSender()
+    servosender.stop()
 
 class Instruction:
-    def __init__(self, direction, prev, source=""):
+    def __init__(self, direction, prev, instruction2=None, source=""):
         self.direction = direction
         self.prev = prev
-        self.source = source;
+        self.source = source
+        self.instruction2 = instruction2
 
     def send_instruction(self):
         #fwd = counterclockwise
@@ -51,7 +54,6 @@ class Instruction:
             if self.direction == Direction.UP:
                 servosender.spin_reverse(400)
             elif self.direction == Direction.DOWN:
-                pass
                 servosender.spin_forward(400)
             elif self.direction == Direction.FORWARD:
                 pass
@@ -72,7 +74,7 @@ class Instruction:
                 sender.stopall()
             elif self.direction == Direction.NEUTRAL:
                 servosender.stop()
-                sender.stop()
+                sender.stop()               
 
 def resolve_absevent(abs_event):
     if abs_event.type == ecodes.EV_ABS:
@@ -129,7 +131,7 @@ def resolve_btnevent(btn_event):
             return Instruction(Direction.NEUTRAL)
     return Instruction(Direction.UNKNOWN)
 
-
+# search for connected game controller
 devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
 device_path = ""
 for device in devices:
@@ -151,23 +153,32 @@ else:
             print(instruction.direction)
         elif event.type == ecodes.EV_ABS:
             current_instruction = resolve_absevent(event)
-            
+            # if the current instrucion is sent from left joystick
             if current_instruction.source == "left":
+                # handle the neutral position
                 if current_instruction.direction == Direction.NEUTRALL:
+                    # save the instruction from right joystick and send the current instruction
+                    current_instruction.instruction2 = previous_instruction[1]
                     current_instruction.send_instruction()
                     print(current_instruction.direction)
+                # check if the previous instruction is the same as the current instruction
                 if previous_instruction is not None and previous_instruction[0].direction != current_instruction.direction:
+                    # handle the instruction only if previous instruction is neutral
                     if previous_instruction[0].direction == Direction.NEUTRALL:
+                        current_instruction.instruction2 = previous_instruction[1]
                         current_instruction.send_instruction()
                         print(current_instruction.direction)
+                # update previous instruction
                 previous_instruction[0] = current_instruction
-            
+            # if the current instruction is sent from right joystick
             if current_instruction.source == "right":
                 if current_instruction.direction == Direction.NEUTRALR:
+                    current_instruction.instruction2 = previous_instruction[0]
                     current_instruction.send_instruction()
                     print(current_instruction.direction)
                 if previous_instruction is not None and previous_instruction[1].direction != current_instruction.direction:
                     if previous_instruction[1].direction == Direction.NEUTRALR:
+                        current_instruction.instruction2 = previous_instruction[0]
                         current_instruction.send_instruction()
                         print(current_instruction.direction)
                 previous_instruction[1] = current_instruction
