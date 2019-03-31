@@ -61,45 +61,45 @@ class InstructionSender:
     
     def forward(self):
         if self.api is not None:
-            self.spin_forward(255, motor1Speed, motor1A, motor1B)
-            self.spin_forward(255, motor2Speed, motor2A, motor2B)
-            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
-            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            self.spin_forward(150, motor1Speed, motor1A, motor1B)
+            self.spin_forward(150, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(150, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(150, motor4Speed, motor4A, motor4B)
             
     def backward(self):
         if self.api is not None:
-            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
-            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
-            self.spin_forward(255, motor3Speed, motor3A, motor3B)
-            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+            self.spin_reverse(150, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(150, motor2Speed, motor2A, motor2B)
+            self.spin_forward(150, motor3Speed, motor3A, motor3B)
+            self.spin_forward(150, motor4Speed, motor4A, motor4B)
             
     def left(self):
         if self.api is not None:
-            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
-            self.spin_forward(255, motor2Speed, motor2A, motor2B)
-            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
-            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+            self.spin_reverse(150, motor1Speed, motor1A, motor1B)
+            self.spin_forward(150, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(150, motor3Speed, motor3A, motor3B)
+            self.spin_forward(150, motor4Speed, motor4A, motor4B)
             
     def right(self):
         if self.api is not None:
-            self.spin_forward(255, motor1Speed, motor1A, motor1B)
-            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
-            self.spin_forward(255, motor3Speed, motor3A, motor3B)
-            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            self.spin_forward(150, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(150, motor2Speed, motor2A, motor2B)
+            self.spin_forward(150, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(150, motor4Speed, motor4A, motor4B)
             
     def clockwise(self):
         if self.api is not None:
-            self.spin_forward(255, motor1Speed, motor1A, motor1B)
-            self.spin_reverse(255, motor2Speed, motor2A, motor2B)
-            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
-            self.spin_forward(255, motor4Speed, motor4A, motor4B)
+            self.spin_forward(150, motor1Speed, motor1A, motor1B)
+            self.spin_reverse(150, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(150, motor3Speed, motor3A, motor3B)
+            self.spin_forward(150, motor4Speed, motor4A, motor4B)
             
     def counterclockwise(self):
         if self.api is not None:
-            self.spin_reverse(255, motor1Speed, motor1A, motor1B)
-            self.spin_forward(255, motor2Speed, motor2A, motor2B)
-            self.spin_forward(255, motor3Speed, motor3A, motor3B)
-            self.spin_reverse(255, motor4Speed, motor4A, motor4B)            
+            self.spin_reverse(150, motor1Speed, motor1A, motor1B)
+            self.spin_forward(150, motor2Speed, motor2A, motor2B)
+            self.spin_forward(150, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(150, motor4Speed, motor4A, motor4B)            
     
     def stop(self, speedPin, pinA, pinB):
         if self.api is not None:
@@ -116,20 +116,20 @@ class InstructionSender:
             
     def right_turn(self):
         if self.api is not None:
-            self.spin_forward(255, motor1Speed, motor1A, motor1B)
+            self.spin_forward(150, motor1Speed, motor1A, motor1B)
             self.stop(motor2Speed, motor2A, motor2B)
-            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
-            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            self.spin_reverse(150, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(150, motor4Speed, motor4A, motor4B)
             
     def left_turn(self):
         if self.api is not None:
             self.stop(motor1Speed, motor1A, motor1B)
-            self.spin_forward(255, motor2Speed, motor2A, motor2B)
-            self.spin_reverse(255, motor3Speed, motor3A, motor3B)
-            self.spin_reverse(255, motor4Speed, motor4A, motor4B)
+            self.spin_forward(150, motor2Speed, motor2A, motor2B)
+            self.spin_reverse(150, motor3Speed, motor3A, motor3B)
+            self.spin_reverse(150, motor4Speed, motor4A, motor4B)
             
     def test(self):
-        self.spin_reverse(255, motor1Speed, motor1A, motor1B)
+        self.spin_reverse(150, motor1Speed, motor1A, motor1B)
 
         
 class ServoSender:

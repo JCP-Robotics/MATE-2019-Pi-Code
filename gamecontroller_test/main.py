@@ -58,24 +58,30 @@ class Instruction:
             elif self.direction == Direction.FORWARD:
                 sender.forward()
             elif self.direction == Direction.BACKWARD:
-                pass
+                sender.backward()
             elif self.direction == Direction.LEFT:
-                pass
+                sender.left()
             elif self.direction == Direction.RIGHT:
-                pass
+                sender.right()
             elif self.direction == Direction.UNKNOWN:
                 pass
             elif self.direction == Direction.NEUTRALR:
-                if self.prev is not None:
+                servosender.stop()
+                '''if self.prev is not None:
                     if self.prev == Direction.UP or self.prev == Direction.DOWN:
                         servosender.stop()
+                        print("stop")
                     else:
-                        sender.stopall()
+                        sender.stopall()'''
             elif self.direction == Direction.NEUTRALL:
                 sender.stopall()
             elif self.direction == Direction.NEUTRAL:
                 servosender.stop()
-                sender.stopall()               
+                sender.stopall()
+            elif self.direction == Direction.CLOCKWISE:
+                sender.clockwise()
+            elif self.direction == Direction.COUNTERCLOCKWISE:
+                sender.counterclockwise()
 
 def resolve_absevent(abs_event):
     if abs_event.type == ecodes.EV_ABS:
